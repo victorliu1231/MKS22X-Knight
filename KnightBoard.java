@@ -51,9 +51,9 @@ public class KnightBoard{
       if (moveNum == board.length * board[0].length){
         return true;
       } else {
-        if (board[row][col] == 0 &&
-            row < board.length && row >= 0 &&
-            col < board[row].length && col >= 0){ //only branches down the tree if it is possible to place a queen here
+        if (row < board.length && row >= 0 &&
+            col < board[row].length && col >= 0 &&
+            board[row][col] == 0){
           addKnight(row,col,moveNum);
           return (solveH(row+1 ,col+2, moveNum+1) || solveH(row+1, col-2, moveNum+1) ||
                   solveH(row-1 ,col+2, moveNum+1) || solveH(row-1, col-2, moveNum+1) ||
