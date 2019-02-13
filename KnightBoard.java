@@ -3,18 +3,19 @@ public class KnightBoard{
 
     //@throws IllegalArgumentException when either parameter is negative.
     public KnightBoard(int startingRows,int startingCols){
-        if (startingRows < 0 || startingCols < 0){
-            throw new IllegalArgumentException("You cannot make a negative sized board!");
+        if (startingRows <= 0 || startingCols <= 0){
+            throw new IllegalArgumentException("You cannot make a negative or 0 sized board!");
         }
         board = new int[startingRows][startingCols];
     }
 
 
-    private boolean addKnight(int row, int col){ //potentially will be written in that optimization class
+    private boolean addKnight(int row, int col, int moveNum){ //potentially will be written in that optimization class
         //if they try to add it to a square with a knight already on it...
         if (board[row][col] != 0){
             return false;
         }
+        board[row][col] = moveNum;
         return true;
     }
 
@@ -23,12 +24,13 @@ public class KnightBoard{
         if (board[row][col] == 0){
             return false;
         }
+        board[row][col] = 0;
         return true;
     }
 
     /**
     *@throws IllegalStateException when the board contains non-zero values.
-    *@throws IllegalArgumentException when either parameter is negative 
+    *@throws IllegalArgumentException when either parameter is negative
     *or out of bounds.
     */
     public boolean solve(int startingRow, int startingCol){ //should work on boards less than 100x100 size
@@ -42,16 +44,32 @@ public class KnightBoard{
                 }
             }
         }
-        return solveH(startingRow,startingCol,0);
+        return solveH(startingRow,startingCol,1);
     }
 
-    private boolean solveH(int row ,int col, int level){ // level is the # of the knight
-        return true; //dummy value
-    } 
+    private boolean solveH(int row ,int col, int moveNum){
+      if (moveNum == board.length * board[0].length){
+        return true;
+      } else {
+        if (board[row][col] == 0 &&
+            row < board.length && row >= 0 &&
+            col < board[row].length && col >= 0){ //only branches down the tree if it is possible to place a queen here
+          addKnight(row,col,moveNum);
+          return (solveH(row+1 ,col+2, moveNum+1) || solveH(row+1, col-2, moveNum+1) ||
+                  solveH(row-1 ,col+2, moveNum+1) || solveH(row-1, col-2, moveNum+1) ||
+                  solveH(row+2 ,col+1, moveNum+1) || solveH(row+2, col-1, moveNum+1) ||
+                  solveH(row-2 ,col+1, moveNum+1) || solveH(row-2, col-1, moveNum+1));
+        }
+        else {
+          removeKnight(row,col);
+          return false;
+        }
+      }
+    }
 
     /**
-    *@throws IllegalStateException when the board contains non-zero values. 
-    *@throws IllegalArgumentException when either parameter is negative 
+    *@throws IllegalStateException when the board contains non-zero values.
+    *@throws IllegalArgumentException when either parameter is negative
     *or out of bounds.
     */
     public int countSolutions(int startingRow, int startingCol){ //would only work on smaller boards! the # of computation for this is immense
@@ -65,16 +83,35 @@ public class KnightBoard{
                 }
             }
         }
-        return true; //dummy value
+        return 1; //dummy value
     }
 
+    //prints the path that the knight went on to get to the solution
     public String toString(){
-        return ""; //dummy value
+      String ans = "";
+      for (int r = 0; r < board.length; r++){
+        for (int c = 0; c < board[r].length; c++){
+          //below if case is so the first column doesn't have an extra whitespace
+          if (c != 0){
+            ans+= " ";
+          }
+          if (board[r][c] < 10){ //if single digit #
+            if (board[r][c] == 0){
+              ans+= " _";
+            } else {
+              ans+= " "+board[r][c];
+            }
+          } else {
+            ans+= ""+board[r][c];
+          }
+        }
+        //so the last row doesn't print a \n
+        if (r != board.length - 1){
+          ans+="\n";
+        }
+      }
+      return ans;
     }
-    /*see format for toString below
-    blank boards display 0's as underscores 
-    you get a blank board if you never called solve or 
-    when there is no solution */
 
-    
+
 }
