@@ -1,5 +1,6 @@
 public class KnightBoard{
     private int[][] board;
+    private int numSolutions;
 
     //@throws IllegalArgumentException when either parameter is negative.
     public KnightBoard(int startingRows,int startingCols){
@@ -7,6 +8,7 @@ public class KnightBoard{
             throw new IllegalArgumentException("You cannot make a negative or 0 sized board!");
         }
         board = new int[startingRows][startingCols];
+        numSolutions = 0;
     }
 
 
@@ -93,7 +95,34 @@ public class KnightBoard{
                 }
             }
         }
-        return 1; //dummy value
+        numSolutions = 0;
+        countSolHelp(startingRow, startingCol, 1, startingRow, startingCol);
+        return numSolutions;
+    }
+
+    //lastKnightR and lastKnightC stores the memory of the last placed Knight's position
+    private void countSolHelp(int row, int col, int moveNum, int lastKnightR, int lastKnightC){
+      //the +1 in base case is here b/c our moveNum starts at 1 instead of 0 (because of how toString is formatted)
+      if (moveNum == board.length * board[0].length +1){
+        removeKnight(row, col); //backtracks and adds a solution when you find a working configuration
+        numSolutions++;
+      } else {
+        if (row < board.length && row >= 0 &&
+            col < board[row].length && col >= 0 &&
+            board[row][col] == 0){ //utilizes short circuiting; only branches down the tree if it is possible to place a Knight here
+              addKnight(row,col,moveNum);
+              countSolHelp(row+1 ,col+2, moveNum+1,row,col);
+              countSolHelp(row+1, col-2, moveNum+1,row,col);
+              countSolHelp(row-1 ,col+2, moveNum+1,row,col);
+              countSolHelp(row-1, col-2, moveNum+1,row,col);
+              countSolHelp(row+2 ,col+1, moveNum+1,row,col);
+              countSolHelp(row+2, col-1, moveNum+1,row,col);
+              countSolHelp(row-2 ,col+1, moveNum+1,row,col);
+              countSolHelp(row-2, col-1, moveNum+1,row,col);
+              //once finishing parsing through the jump spots, then backtrack to explore any new solutions
+              removeKnight(lastKnightR, lastKnightC);
+            }
+      }
     }
 
     //prints the path that the knight went on to get to the solution
