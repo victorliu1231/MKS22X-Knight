@@ -1,6 +1,7 @@
 public class KnightBoard{
     private int[][] board;
     private int numSolutions;
+    private boolean solved = false;
 
     //@throws IllegalArgumentException when either parameter is negative.
     public KnightBoard(int startingRows,int startingCols){
@@ -103,8 +104,9 @@ public class KnightBoard{
     //lastKnightR and lastKnightC stores the memory of the last placed Knight's position
     private void countSolHelp(int row, int col, int moveNum, int lastKnightR, int lastKnightC){
       //the +1 in base case is here b/c our moveNum starts at 1 instead of 0 (because of how toString is formatted)
-      if (moveNum == board.length * board[0].length +1){
-        removeKnight(row, col); //backtracks and adds a solution when you find a working configuration
+      if (moveNum == board.length * board[0].length +1 && !solved){
+        solved = true; //solved is a variable that prevents other recursive calls from duplicating solutions
+        removeKnight(lastKnightR, lastKnightC); //backtracks and adds a solution when you find a working configuration
         numSolutions++;
       } else {
         if (row < board.length && row >= 0 &&
@@ -112,16 +114,17 @@ public class KnightBoard{
             board[row][col] == 0){ //utilizes short circuiting; only branches down the tree if it is possible to place a Knight here
               addKnight(row,col,moveNum);
               countSolHelp(row+1 ,col+2, moveNum+1,row,col);
-              countSolHelp(row+1, col-2, moveNum+1,row,col);
+              countSolHelp(row+1, col-2, moveNum+1,row,col); //this is a problem i can fix later
               countSolHelp(row-1 ,col+2, moveNum+1,row,col);
               countSolHelp(row-1, col-2, moveNum+1,row,col);
               countSolHelp(row+2 ,col+1, moveNum+1,row,col);
               countSolHelp(row+2, col-1, moveNum+1,row,col);
               countSolHelp(row-2 ,col+1, moveNum+1,row,col);
               countSolHelp(row-2, col-1, moveNum+1,row,col);
+              solved = false;
               //once finishing parsing through the jump spots, then backtrack to explore any new solutions
-              removeKnight(lastKnightR, lastKnightC);
-            }
+              removeKnight(row, col);
+        }
       }
     }
 
