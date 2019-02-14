@@ -1,5 +1,5 @@
 public class KnightBoard{
-    int[][] board;
+    private int[][] board;
 
     //@throws IllegalArgumentException when either parameter is negative.
     public KnightBoard(int startingRows,int startingCols){
@@ -33,6 +33,11 @@ public class KnightBoard{
     *@throws IllegalArgumentException when either parameter is negative
     *or out of bounds.
     */
+    /*Any m × n board with m ≤ n, a closed knight's tour is always possible unless one or more of these three conditions are met:
+    m and n are both odd
+    m = 1, 2, or 4
+    m = 3 and n = 4, 6, or 8.
+    */
     public boolean solve(int startingRow, int startingCol){ //should work on boards less than 100x100 size
         if (startingRow < 0 || startingCol < 0){
             throw new IllegalArgumentException("You cannot start at a negative index of the board!");
@@ -48,20 +53,25 @@ public class KnightBoard{
     }
 
     private boolean solveH(int row ,int col, int moveNum){
-      if (moveNum == board.length * board[0].length){
+      //the +1 in base case is here b/c our moveNum starts at 1 instead of 0 (because of how toString is formatted)
+      if (moveNum == board.length * board[0].length +1){
         return true;
       } else {
         if (row < board.length && row >= 0 &&
             col < board[row].length && col >= 0 &&
-            board[row][col] == 0){
-          addKnight(row,col,moveNum);
-          return (solveH(row+1 ,col+2, moveNum+1) || solveH(row+1, col-2, moveNum+1) ||
+            board[row][col] == 0){ //earlier cases shortcircuit if index out of bounds
+              addKnight(row,col,moveNum);
+              if (solveH(row+1 ,col+2, moveNum+1) || solveH(row+1, col-2, moveNum+1) ||
                   solveH(row-1 ,col+2, moveNum+1) || solveH(row-1, col-2, moveNum+1) ||
                   solveH(row+2 ,col+1, moveNum+1) || solveH(row+2, col-1, moveNum+1) ||
-                  solveH(row-2 ,col+1, moveNum+1) || solveH(row-2, col-1, moveNum+1));
-        }
+                  solveH(row-2 ,col+1, moveNum+1) || solveH(row-2, col-1, moveNum+1)){
+                    return true;
+                  } else {
+                    removeKnight(row,col);
+                    return false;
+                  }
+            }
         else {
-          removeKnight(row,col);
           return false;
         }
       }
