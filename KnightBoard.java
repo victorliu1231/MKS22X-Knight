@@ -1,6 +1,6 @@
 public class KnightBoard{
     private int[][] board;
-    private int[][] boardMoves;
+    private Square[][] boardMoves;
     private int numSolutions;
     private boolean solved = false;
 
@@ -10,7 +10,7 @@ public class KnightBoard{
             throw new IllegalArgumentException("You cannot make a negative or 0 sized board!");
         }
         board = new int[startingRows][startingCols];
-        boardMoves = new int[startingRows][startingCols];
+        boardMoves = new Square[startingRows][startingCols];
         numSolutions = 0;
         instantiateBoardMoves();
     }
@@ -18,16 +18,7 @@ public class KnightBoard{
     private void instantiateBoardMoves(){
       for (int r = 0; r < board.length; r++){
         for (int c = 0; c < board[r].length; c++){
-          if (r == 0 && c == 0 ||
-              r == 0 && c == board[r].length - 1 ||
-              r == board.length - 1 && c == 0 ||
-              r == board.length - 1 && c == board[r].length - 1){
-                board[r][c] = 2;
-              }
-            else if (r == 0 || r == board.length - 1 ||
-                c == 0 || c == board[r].length - 1){
-                  board[r][c] = 3;
-                }
+          boardMoves[r][c] = new Square(r,c, board);
         }
       }
     }
@@ -39,7 +30,7 @@ public class KnightBoard{
           if (c != 0){
             s+= " ";
           }
-          s+= boardMoves[r][c];
+          s+= boardMoves[r][c].toString();
         }
         if (r != boardMoves.length - 1){
           s+= "\n";
