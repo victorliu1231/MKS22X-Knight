@@ -122,7 +122,7 @@ public class KnightBoard{
               addKnight(row,col,moveNum);
               boolean pathHasSolution = false;
               for (int i = 0; i < 8; i++){
-                pathHasSolution = pathHasSolution && solveH(row + rowKnightIncrements[i], col + colKnightIncrements[i], moveNum+1);
+                pathHasSolution = pathHasSolution || solveH(row + rowKnightIncrements[i], col + colKnightIncrements[i], moveNum+1);
               }
               if (!pathHasSolution){ //if no solution in this path, backtrack
                 removeKnight(row,col);
