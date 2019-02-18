@@ -1,5 +1,6 @@
 public class KnightBoard{
     private int[][] board;
+    private int[][] boardMoves;
     private int numSolutions;
 
     //@throws IllegalArgumentException when either parameter is negative.
@@ -8,7 +9,42 @@ public class KnightBoard{
             throw new IllegalArgumentException("You cannot make a negative or 0 sized board!");
         }
         board = new int[startingRows][startingCols];
+        boardMoves = new int[startingRows][startingCols];
         numSolutions = 0;
+        instantiateBoardMoves();
+    }
+
+    private void instantiateBoardMoves(){
+      for (int r = 0; r < board.length; r++){
+        for (int c = 0; c < board[r].length; c++){
+          if (r == 0 && c == 0 ||
+              r == 0 && c == board[r].length - 1 ||
+              r == board.length - 1 && c == 0 ||
+              r == board.length - 1 && c == board[r].length - 1){
+                board[r][c] = 2;
+              }
+            else if (r == 0 || r == board.length - 1 ||
+                c == 0 || c == board[r].length - 1){
+                  board[r][c] = 3;
+                }
+        }
+      }
+    }
+
+    public String toStringMoves(){
+      String s = "";
+      for (int r = 0; r < board.length; r++){
+        for (int c = 0; c < board[r].length; c++){
+          if (c != 0){
+            s+= " ";
+          }
+          s+= boardMoves[r][c];
+        }
+        if (r != boardMoves.length - 1){
+          s+= "\n";
+        }
+      }
+      return s;
     }
 
 
