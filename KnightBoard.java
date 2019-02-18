@@ -6,7 +6,7 @@ public class KnightBoard{
     private int[] rowKnightIncrements;
     private int[] colKnightIncrements;
 
-    //@throws IllegalArgumentException when either parameter is negative.
+    //@throws IllegalArgumentException when either parameter is negative or 0.
     public KnightBoard(int startingRows,int startingCols){
         if (startingRows <= 0 || startingCols <= 0){
             throw new IllegalArgumentException("You cannot make a negative or 0 sized board!");
@@ -45,7 +45,7 @@ public class KnightBoard{
     }
 
 
-    private boolean addKnight(int row, int col, int moveNum){ //potentially will be written in that optimization class
+    private boolean addKnight(int row, int col, int moveNum){
         //if they try to add it to a square with a knight already on it...
         if (board[row][col] != 0){
             return false;
@@ -60,13 +60,14 @@ public class KnightBoard{
           //if on the board
           if (rowBeingModified < board.length && rowBeingModified >= 0 &&
               colBeingModified < board[row].length && colBeingModified >= 0){
+                //every knight move that could have led to this tile will have one less possible move on the optimization board
                 boardMoves[rowBeingModified][colBeingModified].subtract();
               }
         }
         return true;
     }
 
-    private boolean removeKnight(int row, int col){ //potentially will be written in that optimization class
+    private boolean removeKnight(int row, int col){
         //if they try to remove a knight where there isn't one
         if (board[row][col] == 0){
             return false;
@@ -81,6 +82,7 @@ public class KnightBoard{
           //if on the board
           if (rowBeingModified < board.length && rowBeingModified >= 0 &&
               colBeingModified < board[row].length && colBeingModified >= 0){
+                //every knight move that could have led to this tile will have one more possible move on the optimization board
                 boardMoves[rowBeingModified][colBeingModified].add();
               }
         }
@@ -98,7 +100,7 @@ public class KnightBoard{
     m = 3 and n = 4, 6, or 8.
     */
     public boolean solve(int startingRow, int startingCol){ //should work on boards less than 100x100 size
-        if (startingRow < 0 || startingCol < 0){
+        if (startingRow < 0 || startingCol < 0 || startingRow >= board.length || startingCol >= board[startingRow].length){
             throw new IllegalArgumentException("You cannot start at a negative index of the board!");
         }
         for (int r = 0; r < board.length; r++){
@@ -140,7 +142,7 @@ public class KnightBoard{
     *or out of bounds.
     */
     public int countSolutions(int startingRow, int startingCol){ //would only work on smaller boards! the # of computation for this is immense
-        if (startingRow < 0 || startingCol < 0){
+        if (startingRow < 0 || startingCol < 0  || startingRow >= board.length || startingCol >= board[startingRow].length){
             throw new IllegalArgumentException("You cannot start at a negative index of the board!");
         }
         for (int r = 0; r < board.length; r++){
