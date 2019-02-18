@@ -101,21 +101,21 @@ public class KnightBoard{
 
     private boolean solveH(int row ,int col, int moveNum){
       //the +1 in base case is here b/c our moveNum starts at 1 instead of 0 (because of how toString is formatted)
-      if (moveNum == board.length * board[0].length +1){
+      if (moveNum == board.length * board[0].length){
+        addKnight(row,col,moveNum);
         return true;
       } else {
         if (row < board.length && row >= 0 &&
             col < board[row].length && col >= 0 &&
             board[row][col] == 0){ //earlier cases shortcircuit if index out of bounds
               addKnight(row,col,moveNum);
-              boolean pathHasSolution = false;
-              for (int i = 0; i < 8; i++){
-                pathHasSolution = pathHasSolution || solveH(row + rowKnightIncrements[i], col + colKnightIncrements[i], moveNum+1);
-              }
-              if (!pathHasSolution){ //if no solution in this path, backtrack
+              Square bestSquare = optimizeNextMove(row, col);
+              if (bestSquare == null){ //if no solution in this path, backtrack
                 removeKnight(row,col);
+                return false;
+              } else {
+                return solveH(bestSquare.getCoords()[0], bestSquare.getCoords()[1], moveNum+1);
               }
-              return pathHasSolution;
             } else {
               return false;
             }
@@ -150,6 +150,31 @@ public class KnightBoard{
       }
       return bestMove;
     }
+
+    /* BRUTE FORCE SOLVE HELPER METHOD
+    private boolean solveH(int row ,int col, int moveNum){
+      //the +1 in base case is here b/c our moveNum starts at 1 instead of 0 (because of how toString is formatted)
+      if (moveNum == board.length * board[0].length +1){
+        return true;
+      } else {
+        if (row < board.length && row >= 0 &&
+            col < board[row].length && col >= 0 &&
+            board[row][col] == 0){ //earlier cases shortcircuit if index out of bounds
+              addKnight(row,col,moveNum);
+              boolean pathHasSolution = false;
+              for (int i = 0; i < 8; i++){
+                pathHasSolution = pathHasSolution || solveH(row + rowKnightIncrements[i], col + colKnightIncrements[i], moveNum+1);
+              }
+              if (!pathHasSolution){ //if no solution in this path, backtrack
+                removeKnight(row,col);
+              }
+              return pathHasSolution;
+            } else {
+              return false;
+            }
+      }
+    }
+    */
 
     
     /**
