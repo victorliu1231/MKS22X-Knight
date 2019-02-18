@@ -3,7 +3,7 @@ public class VDriver{
         KnightBoard k1 = new KnightBoard(5,5);
         System.out.println(k1); System.out.println();
         System.out.println(k1.toStringMoves());
-        KnightBoard k3 = new KnightBoard(8,8);
+        KnightBoard k3 = new KnightBoard(7,7);
         System.out.println();
         System.out.println(k3.toStringMoves());
         /*
@@ -38,5 +38,6 @@ public class VDriver{
 
 
         //test exceptions
+        //how tf do i optimize 3xN or Nx3 boards or less
     }
 }

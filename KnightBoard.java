@@ -2,16 +2,21 @@ public class KnightBoard{
     private int[][] board;
     private Square[][] boardMoves;
     private int numSolutions;
-    private boolean solved = false;
+    private boolean solved;
+    private int[] rowKnightIncrements;
+    private int[] colKnightIncrements;
 
     //@throws IllegalArgumentException when either parameter is negative.
     public KnightBoard(int startingRows,int startingCols){
         if (startingRows <= 0 || startingCols <= 0){
             throw new IllegalArgumentException("You cannot make a negative or 0 sized board!");
         }
+        solved = false;
         board = new int[startingRows][startingCols];
         boardMoves = new Square[startingRows][startingCols];
         numSolutions = 0;
+        rowKnightIncrements = new int[]{1,1,-1,-1,2,-2,2,-2};
+        colKnightIncrements = new int[]{2,-2,2,-2,1,1,-1,-1};
         instantiateBoardMoves();
     }
 
@@ -46,6 +51,18 @@ public class KnightBoard{
             return false;
         }
         board[row][col] = moveNum;
+        //pertaining to optimization board
+        int rowBeingModified;
+        int colBeingModified;
+        for (int i = 0; i < 8; i++){
+          rowBeingModified = row + rowKnightIncrements[i];
+          colBeingModified = col + colKnightIncrements[i];
+          //if on the board
+          if (rowBeingModified < board.length && rowBeingModified >= 0 &&
+              colBeingModified < board[row].length && colBeingModified >= 0){
+                boardMoves[rowBeingModified][colBeingModified].subtract();
+              }
+        }
         return true;
     }
 
@@ -55,6 +72,18 @@ public class KnightBoard{
             return false;
         }
         board[row][col] = 0;
+        //pertaining to optimization board
+        int rowBeingModified;
+        int colBeingModified;
+        for (int i = 0; i < 8; i++){
+          rowBeingModified = row + rowKnightIncrements[i];
+          colBeingModified = col + colKnightIncrements[i];
+          //if on the board
+          if (rowBeingModified < board.length && rowBeingModified >= 0 &&
+              colBeingModified < board[row].length && colBeingModified >= 0){
+                boardMoves[rowBeingModified][colBeingModified].add();
+              }
+        }
         return true;
     }
 
@@ -91,19 +120,17 @@ public class KnightBoard{
             col < board[row].length && col >= 0 &&
             board[row][col] == 0){ //earlier cases shortcircuit if index out of bounds
               addKnight(row,col,moveNum);
-              if (solveH(row+1 ,col+2, moveNum+1) || solveH(row+1, col-2, moveNum+1) ||
-                  solveH(row-1 ,col+2, moveNum+1) || solveH(row-1, col-2, moveNum+1) ||
-                  solveH(row+2 ,col+1, moveNum+1) || solveH(row+2, col-1, moveNum+1) ||
-                  solveH(row-2 ,col+1, moveNum+1) || solveH(row-2, col-1, moveNum+1)){
-                    return true;
-                  } else {
-                    removeKnight(row,col);
-                    return false;
-                  }
+              boolean pathHasSolution = false;
+              for (int i = 0; i < 8; i++){
+                pathHasSolution = pathHasSolution && solveH(row + rowKnightIncrements[i], col + colKnightIncrements[i], moveNum+1);
+              }
+              if (!pathHasSolution){ //if no solution in this path, backtrack
+                removeKnight(row,col);
+              }
+              return pathHasSolution;
+            } else {
+              return false;
             }
-        else {
-          return false;
-        }
       }
     }
 
@@ -140,15 +167,10 @@ public class KnightBoard{
             col < board[row].length && col >= 0 &&
             board[row][col] == 0){ //utilizes short circuiting; only branches down the tree if it is possible to place a Knight here
               addKnight(row,col,moveNum);
-              countSolHelp(row+1 ,col+2, moveNum+1,row,col);
-              countSolHelp(row+1, col-2, moveNum+1,row,col); //this is a problem i can fix later
-              countSolHelp(row-1 ,col+2, moveNum+1,row,col);
-              countSolHelp(row-1, col-2, moveNum+1,row,col);
-              countSolHelp(row+2 ,col+1, moveNum+1,row,col);
-              countSolHelp(row+2, col-1, moveNum+1,row,col);
-              countSolHelp(row-2 ,col+1, moveNum+1,row,col);
-              countSolHelp(row-2, col-1, moveNum+1,row,col);
-              solved = false;
+              for (int i = 0; i < 8; i++){
+                countSolHelp(row + rowKnightIncrements[i] ,col + colKnightIncrements[i], moveNum + 1, row, col);
+              }
+              solved = false; //solved is a variable that prevents other recursive calls from duplicating solutions
               //once finishing parsing through the jump spots, then backtrack to explore any new solutions
               removeKnight(row, col);
         }

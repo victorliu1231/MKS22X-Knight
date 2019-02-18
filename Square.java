@@ -2,51 +2,46 @@ public class Square{
   private int r;
   private int c;
   private int numJumpSpots;
+  private int[] rowKnightIncrements;
+  private int[] colKnightIncrements;
 
-  public Square(int r, int c, int[][] board){
-    //for 4x4 boards or larger
-    //we fill in all the squares and then reassign the squares to the correct value based on an if case
-    numJumpSpots = 8;
-    //the 6's
-    if (r == 1 || r == board.length-2 ||
-        c == 1 || c == board[r].length - 2){
-          numJumpSpots = 6;
-        }
-    //edges of board
-    if (r == 0 || r == board.length-1 ||
-        c == 0 || c == board[r].length - 1){
-          numJumpSpots = 4;          
-        }
-    //one square diagonal to each corner of the board
-    if (r == 1 && c == 1 ||
-        r == board.length-2 && c == 1 ||
-        r == 1 && c == board[r].length-2 ||
-        r == board.length-2 && c == board[r].length-2){
-          numJumpSpots = 4;
-        }
-    if (r == 0 && c == 1 ||
-        r == 0 && c == board[r].length-2 ||
-        r == 1 && c == 0 ||
-        r == 1 && c == board[r].length-1 ||
-        r == board.length-2 && c == 0 ||
-        r == board.length-2 && c == board[r].length-1 ||
-        r == board.length-1 && c == 1 ||
-        r == board.length-1 && c == board[r].length-2){
-          numJumpSpots = 3;
-        }
-    if (r == 0 && c == 0 ||
-        r == 0 && c == board[r].length-1 ||
-        r == board.length-1 && c == 0 ||
-        r == board.length-1 && c == board[r].length-1){
-          numJumpSpots = 2;
-    }
-    this.r = r;
-    this.c = c;
+  public Square(int row, int col, int[][] board){
+    rowKnightIncrements = new int[]{1,1,-1,-1,2,-2,2,-2};
+    colKnightIncrements = new int[]{2,-2,2,-2,1,1,-1,-1};
+    int rowBeingModified;
+    int colBeingModified;
+    for (int i = 0; i < 8; i++){
+      rowBeingModified = row + rowKnightIncrements[i];
+      colBeingModified = col + colKnightIncrements[i];
+      //if on the board
+      if (rowBeingModified < board.length && rowBeingModified >= 0 &&
+          colBeingModified < board[row].length && colBeingModified >= 0){
+            numJumpSpots++; //for every possible knight move from this square found, increment numJumpSpots
+          }
+      }
+      r = row;
+      c = col;
   }
+  
 
   //returns the diff between this.numJumpSpots and other.numJumpSpots
   public int compareTo(Square other){
     return this.numJumpSpots - other.numJumpSpots;
+  }
+
+  public void subtract(){
+    numJumpSpots--;
+  }
+
+  public void add(){
+    numJumpSpots++;
+  }
+
+  public int[] getCoords(){
+    int[] coords = new int[2];
+    coords[0] = r;
+    coords[1] = c;
+    return coords;
   }
 
   public String toString(){
