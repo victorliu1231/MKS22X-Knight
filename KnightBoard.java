@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class KnightBoard{
     private int[][] board;
     private Square[][] boardMoves;
@@ -26,22 +28,6 @@ public class KnightBoard{
           boardMoves[r][c] = new Square(r,c, board);
         }
       }
-    }
-
-    public String toStringMoves(){
-      String s = "";
-      for (int r = 0; r < board.length; r++){
-        for (int c = 0; c < board[r].length; c++){
-          if (c != 0){
-            s+= " ";
-          }
-          s+= boardMoves[r][c].toString();
-        }
-        if (r != boardMoves.length - 1){
-          s+= "\n";
-        }
-      }
-      return s;
     }
 
 
@@ -136,6 +122,36 @@ public class KnightBoard{
       }
     }
 
+    private Square optimizeNextMove(int row, int col){
+      ArrayList<Square> possibleMoves = new ArrayList<>();
+      int potentialRow;
+      int potentialCol;
+      //generates a list of all the possible moves
+      for (int i = 0; i < 8; i++){
+        potentialRow = row + rowKnightIncrements[i];
+        potentialCol = col + colKnightIncrements[i];
+        //if on the board
+        if (potentialRow < board.length && potentialRow >= 0 &&
+            potentialCol < board[row].length && potentialCol >= 0 &&
+            board[potentialRow][potentialCol] == 0){
+              possibleMoves.add(boardMoves[potentialRow][potentialCol]);
+            }
+      }
+      //if there are no possible moves, return null
+      if (possibleMoves.size() == 0){
+        return null;
+      }
+      //now to sort the possibleMoves to get best move
+      Square bestMove = possibleMoves.get(0);
+      for (Square temp: possibleMoves){
+        if (temp.getNumMoves() < bestMove.getNumMoves()){
+          bestMove = temp;
+        }
+      }
+      return bestMove;
+    }
+
+    
     /**
     *@throws IllegalStateException when the board contains non-zero values.
     *@throws IllegalArgumentException when either parameter is negative
@@ -179,6 +195,7 @@ public class KnightBoard{
       }
     }
 
+
     //prints the path that the knight went on to get to the solution
     public String toString(){
       String ans = "";
@@ -206,5 +223,21 @@ public class KnightBoard{
       return ans;
     }
 
+    //prints the optimization board
+    public String toStringMoves(){
+      String s = "";
+      for (int r = 0; r < board.length; r++){
+        for (int c = 0; c < board[r].length; c++){
+          if (c != 0){
+            s+= " ";
+          }
+          s+= ""+boardMoves[r][c].getNumMoves();
+        }
+        if (r != boardMoves.length - 1){
+          s+= "\n";
+        }
+      }
+      return s;
+    }
 
 }

@@ -122,6 +122,27 @@ public class VDriver{
             numExceptions++;
         }
         
+        /*
+        System.out.println(k1.toStringMoves()); System.out.println();
+        k1.addKnight(0, 0, 1);
+        System.out.println(k1); System.out.println();
+        System.out.println(k1.toStringMoves()); System.out.println();
+        k1.addKnight(2, 2, 2);
+        System.out.println(k1); System.out.println();
+        System.out.println(k1.toStringMoves()); System.out.println();
+        k1.addKnight(1, 3, 3);
+        System.out.println(k1); System.out.println();
+        System.out.println(k1.toStringMoves()); System.out.println();
+        k1.removeKnight(1, 3);
+        System.out.println(k1); System.out.println();
+        System.out.println(k1.toStringMoves()); System.out.println();
+        k1.removeKnight(2, 2);
+        System.out.println(k1); System.out.println();
+        System.out.println(k1.toStringMoves()); System.out.println();
+        k1.removeKnight(0, 0);
+        System.out.println(k1); System.out.println();
+        System.out.println(k1.toStringMoves()); System.out.println();
+        */
 
         System.out.println(k1.solve(0,0)); //true
         System.out.println(k1); //path board
@@ -141,7 +162,6 @@ public class VDriver{
         System.out.println();
 
 
-        //make addknight and removeknight private
         //test the solve = false board size cases (when u optimized regular solve)
         /*
         solve(startRow,StartCol) : 

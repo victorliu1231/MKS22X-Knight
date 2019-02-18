@@ -44,7 +44,7 @@ public class Square{
     return coords;
   }
 
-  public String toString(){
-    return ""+numJumpSpots;
+  public int getNumMoves(){
+    return numJumpSpots;
   }
 }
