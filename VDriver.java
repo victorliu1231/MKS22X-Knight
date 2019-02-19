@@ -170,8 +170,8 @@ public class VDriver{
         long diffMillis = endMillis - startMillis;
         System.out.println("seconds: "+ diffMillis/1000.0);
         */
-        k1 = new KnightBoard(8,8); //PROBLEM CHILD
-        System.out.println(k1.solve(7,5));
+        k1 = new KnightBoard(4,5);
+        System.out.println(k1.solve(0,1));
         System.out.println(k1);
 
         if (numExceptions == 16){

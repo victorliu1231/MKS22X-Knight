@@ -104,12 +104,22 @@ public class KnightBoard{
             col < board[row].length && col >= 0 &&
             board[row][col] == 0){ //earlier cases shortcircuit if index out of bounds
               addKnight(row,col,moveNum);
-              Square bestSquare = optimizeNextMove(row, col);
-              if (bestSquare == null){ //if no solution in this path, backtrack
+              //generates a list of best move to worst move
+              ArrayList<Square> sortedBestMoves = optimizeNextMove(row, col);
+              if (sortedBestMoves == null){ //if no solution in this path, backtrack
                 removeKnight(row,col);
                 return false;
               } else {
-                return solveH(bestSquare.getCoords()[0], bestSquare.getCoords()[1], moveNum+1);
+                boolean isSolved = false;
+                //loops through the list of best moves to worst moves
+                for (int i = 0; i < sortedBestMoves.size(); i++){
+                  isSolved = isSolved || solveH(sortedBestMoves.get(i).r(), sortedBestMoves.get(i).c(), moveNum+1);
+                }
+                //if there is no solution, then remove knight and backtrack
+                if (!isSolved){
+                  removeKnight(row,col);
+                }
+                return isSolved;
               }
             } else {
               return false;
@@ -117,8 +127,9 @@ public class KnightBoard{
       }
     }
 
-    private Square optimizeNextMove(int row, int col){
-      ArrayList<Square> possibleMoves = new ArrayList<>();
+    //generates a list of best moves to worst moves
+    private ArrayList<Square> optimizeNextMove(int row, int col){
+      ArrayList<Square> sortedMoves = new ArrayList<>();
       int potentialRow;
       int potentialCol;
       //generates a list of all the possible moves
@@ -129,21 +140,35 @@ public class KnightBoard{
         if (potentialRow < board.length && potentialRow >= 0 &&
             potentialCol < board[row].length && potentialCol >= 0 &&
             board[potentialRow][potentialCol] == 0){
-              possibleMoves.add(boardMoves[potentialRow][potentialCol]);
+              sortedMoves.add(boardMoves[potentialRow][potentialCol]);
             }
       }
       //if there are no possible moves, return null
-      if (possibleMoves.size() == 0){
+      if (sortedMoves.size() == 0){
         return null;
       }
       //now to sort the possibleMoves to get best move
-      Square bestMove = possibleMoves.get(0);
-      for (Square temp: possibleMoves){
-        if (temp.getNumMoves() < bestMove.getNumMoves()){
-          bestMove = temp;
+      insertionSort(sortedMoves);
+      return sortedMoves;
+    }
+
+    //pulled over from Sorts lab
+    public static void insertionSort(ArrayList<Square> ary){
+      Square storer = ary.get(0);
+      boolean madeSwaps = false;
+      for (int n = 1; n < ary.size(); n++){ //loops through whole thing, starting with the unsorted part
+        storer = ary.get(n); //the value that wants to be sorted
+        int i = n;
+        while (i > 0 && storer.getNumMoves() < ary.get(i-1).getNumMoves()){ //looping through sorted part and finding out where to place it
+          ary.set(i, ary.get(i-1)); //while looping, shifting over the elements to make room for the storer
+          i--;
+          madeSwaps = true;
         }
+        if (madeSwaps){ //only if the while loop runs will you actually edit the sorted part
+          ary.set(i, storer);
+        }
+        madeSwaps = false; //resets the boolean so next pass has a clean slate
       }
-      return bestMove;
     }
 
     /* BRUTE FORCE SOLVE HELPER METHOD

@@ -37,11 +37,12 @@ public class Square{
     numJumpSpots++;
   }
 
-  public int[] getCoords(){
-    int[] coords = new int[2];
-    coords[0] = r;
-    coords[1] = c;
-    return coords;
+  public int r(){
+    return r;
+  }
+
+  public int c(){
+    return c;
   }
 
   public int getNumMoves(){
