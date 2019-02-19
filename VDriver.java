@@ -144,8 +144,18 @@ public class VDriver{
         System.out.println(k1.toStringMoves()); System.out.println();
         */
 
-        System.out.println(k1.solve(0,0)); //true
-        System.out.println(k1); //path board
+        //System.out.println(k1.solve(0,0)); //true
+        //System.out.println(k1); //path board
+        //System.out.println();
+
+        /*
+        System.out.println(k1.solve(1,0)); //false
+        System.out.println(k1);
+        */ //backtracking should have cleared everything...
+
+        /*
+        System.out.println(k1.solve(2,2)); //true
+        System.out.println(k1);
         System.out.println();
 
         KnightBoard k2 = new KnightBoard(3,4);
@@ -153,6 +163,16 @@ public class VDriver{
         k2 = new KnightBoard(3,4);
         System.out.println(k2.countSolutions(2,3)); System.out.println(k2); System.out.println(); //2, blank board
         
+        KnightBoard k8 = new KnightBoard(92,92);
+        long startMillis = System.currentTimeMillis();
+        System.out.println(k8.solve(5,5));
+        long endMillis = System.currentTimeMillis();
+        long diffMillis = endMillis - startMillis;
+        System.out.println("seconds: "+ diffMillis/1000.0);
+        */
+        k1 = new KnightBoard(8,8); //PROBLEM CHILD
+        System.out.println(k1.solve(7,5));
+        System.out.println(k1);
 
         if (numExceptions == 16){
             System.out.println("Hurray! You caught every exception");
@@ -162,14 +182,8 @@ public class VDriver{
         System.out.println();
 
 
-        //test the solve = false board size cases (when u optimized regular solve)
-        /*
-        solve(startRow,StartCol) : 
-    should work on boards where the number of squares is under 100. 
-
-countSolutions(startRow,StartCol) : 
-    would only work on smaller boards! The exact sizes will be determined later. 
-    */
+        //wait what happens when u try to go to an optimized move, it fails, do u try to go to next optimized move or backtrack?
+        
 
     }
 }

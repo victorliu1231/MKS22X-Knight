@@ -80,14 +80,9 @@ public class KnightBoard{
     *@throws IllegalArgumentException when either parameter is negative
     *or out of bounds.
     */
-    /*Any m × n board with m ≤ n, a closed knight's tour is always possible unless one or more of these three conditions are met:
-    m and n are both odd
-    m = 1, 2, or 4
-    m = 3 and n = 4, 6, or 8.
-    */
     public boolean solve(int startingRow, int startingCol){ //should work on boards less than 100x100 size
         if (startingRow < 0 || startingCol < 0 || startingRow >= board.length || startingCol >= board[startingRow].length){
-            throw new IllegalArgumentException("You cannot start at a negative index of the board!");
+            throw new IllegalArgumentException("You cannot start at a negative index or index out of bounds in the board!");
         }
         for (int r = 0; r < board.length; r++){
             for (int c = 0; c < board[r].length; c++){
@@ -184,7 +179,7 @@ public class KnightBoard{
     */
     public int countSolutions(int startingRow, int startingCol){ //would only work on smaller boards! the # of computation for this is immense
         if (startingRow < 0 || startingCol < 0  || startingRow >= board.length || startingCol >= board[startingRow].length){
-            throw new IllegalArgumentException("You cannot start at a negative index of the board!");
+            throw new IllegalArgumentException("You cannot start at a negative index or index out of bounds in the board!");
         }
         for (int r = 0; r < board.length; r++){
             for (int c = 0; c < board[r].length; c++){
